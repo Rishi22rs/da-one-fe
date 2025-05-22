@@ -1,0 +1,17 @@
+export const navigationConstants = {
+  LOGIN_ROUTE: 'login-route',
+  LOGIN: 'login',
+  HOME_ROUTE: 'home-route',
+  HOME: 'home',
+  VENDOR_DETAILS: 'vendor_details',
+  OTP: 'otp',
+  VENDOR_ADMIN_PANEL_ROUTE: 'vendor_admin_panel_route',
+  ADDING_VENDOR_DETAILS: 'adding_vendor_details',
+  VENDOR_HOME_SCREEN: 'vendor_home_screen',
+  BOTTOM_TABS: 'bottom_tabs',
+  PROFILE: 'profile',
+  PROFILE_ROUTE: 'profile-route',
+  PROFILE_EDIT: 'profile-edit',
+  STEPPER_SCREEN: 'stepper-screen',
+  ONBOARDING: 'onboarding',
+};
