@@ -6,15 +6,22 @@ import {TextComponent} from '../../components/TextComponent';
 import {ButtonComponent} from '../../components/ButtonComponent';
 import {TextInputComponent} from '../../components/TextInputComponent';
 import {ModalComponent} from '../../components/ModalComponent';
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {Chip} from '../../components/ChipComponent';
 import {interestsCategories} from '../../constants/profile-info-options';
 import AntDesignIcon from 'react-native-vector-icons/dist/AntDesign';
 import {defaultTheme} from '../../config/theme';
+import {useGetUserInfo} from '../../api/profile';
 
 export const ProfileEdit = ({route}) => {
   const styles = createStyleSheet();
   const interestedModalRef = useRef();
+
+  useEffect(() => {
+    useGetUserInfo().then(res => {
+      console.log('resss', res);
+    });
+  }, []);
 
   return (
     <>
@@ -73,7 +80,7 @@ export const ProfileEdit = ({route}) => {
           />
         </CardComponent>
       </ScrollView>
-      <ModalComponent title="Interests" ref={interestedModalRef}>
+      {/* <ModalComponent title="Interests" ref={interestedModalRef}>
         <FlatList
           contentContainerStyle={{paddingBottom: 16}}
           data={interestsCategories}
@@ -89,7 +96,7 @@ export const ProfileEdit = ({route}) => {
           )}
         />
         <ButtonComponent buttonText={'Save'} />
-      </ModalComponent>
+      </ModalComponent> */}
     </>
   );
 };

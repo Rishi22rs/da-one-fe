@@ -8,6 +8,9 @@ import {TextInputComponent} from '../../components/TextInputComponent';
 import {defaultTheme} from '../../config/theme';
 import {hexToRgbA} from '../../utils/hexToRgba';
 import {createStyleSheet} from './style';
+import {useAddUserInfo} from '../../api/onboarding';
+import {useNavigation} from '@react-navigation/native';
+import {navigationConstants} from '../../constants/app-navigation';
 
 const genders = ['Woman', 'Man', 'More'];
 const orientations = ['Straight', 'Gay', 'Lesbian', 'Bisexual', 'Asexual'];
@@ -26,6 +29,8 @@ export const Onboarding = () => {
   });
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => (prev > 0 ? prev - 1 : prev));
+
+  const navigation = useNavigation();
 
   const isStepValid = () => {
     switch (step) {
@@ -162,6 +167,16 @@ export const Onboarding = () => {
           </>
         );
       default:
+        useAddUserInfo({
+          ...formData,
+          passions: formData.passions.join(','),
+        }).then(res =>
+          navigation.replace(navigationConstants.BOTTOM_TABS, {
+            screen: navigationConstants.HOME,
+            params: {},
+          }),
+        );
+
         return <Text style={styles.title}>You're all set!</Text>;
     }
   };

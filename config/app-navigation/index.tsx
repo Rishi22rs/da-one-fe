@@ -13,16 +13,16 @@ export const AppNavigation = () => {
     <NavigationContainer>
       <MasterStack.Navigator screenOptions={{headerShown: false}}>
         <MasterStack.Screen
+          name={navigationConstants.STEPPER_SCREEN}
+          component={Stepper}
+        />
+        <MasterStack.Screen
           name={navigationConstants.LOGIN_ROUTE}
           component={AuthenticationRoute}
         />
         <MasterStack.Screen
           name={navigationConstants.BOTTOM_TABS}
           component={BottomTabs}
-        />
-        <MasterStack.Screen
-          name={navigationConstants.STEPPER_SCREEN}
-          component={Stepper}
         />
         <MasterStack.Screen
           name={navigationConstants.PROFILE_ROUTE}

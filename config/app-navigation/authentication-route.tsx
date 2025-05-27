@@ -12,12 +12,12 @@ export const AuthenticationRoute = () => {
         headerShown: false,
       }}>
       <AuthenticationStack.Screen
-        name={navigationConstants.ONBOARDING}
-        component={Onboarding}
-      />
-      <AuthenticationStack.Screen
         name={navigationConstants.LOGIN}
         component={Login}
+      />
+      <AuthenticationStack.Screen
+        name={navigationConstants.ONBOARDING}
+        component={Onboarding}
       />
     </AuthenticationStack.Navigator>
   );

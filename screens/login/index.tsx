@@ -67,6 +67,7 @@ export const Login = ({route}) => {
               placeholder="Enter Phone Number"
               onChangeText={number => setPhoneNumber(number)}
               viewStyle={style.input}
+              keyboardType="phone-pad"
             />
             <ButtonComponent
               buttonText={'Request OTP'}
