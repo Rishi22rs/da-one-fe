@@ -2,9 +2,38 @@ import {Image, ScrollView, Text, View} from 'react-native';
 import {CardComponent} from '../../components/CardComponent';
 import {Header} from '../../components/Header';
 import {createStyleSheet} from './style';
+import {useEffect} from 'react';
+import {requestLocationPermission} from '../../utils/requestLocationPermission';
+import Geolocation from 'react-native-geolocation-service';
 
 export const Home = ({route}) => {
   const styles = createStyleSheet();
+
+  useEffect(() => {
+    (async () => {
+      const granted = await requestLocationPermission();
+      if (granted) {
+        console.log('Permission granted');
+        // fetch location or do something here
+      } else {
+        console.log('Permission denied');
+      }
+    })();
+  }, []);
+
+  Geolocation.getCurrentPosition(
+    position => {
+      console.log('Location:', position);
+    },
+    error => {
+      console.error('Location error:', error);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000,
+    },
+  );
 
   return (
     <>

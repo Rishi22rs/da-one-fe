@@ -5,10 +5,12 @@ import {CardComponent} from '../../components/CardComponent';
 import {Header} from '../../components/Header';
 import {navigationConstants} from '../../constants/app-navigation';
 import {createStyleSheet} from './style';
+import {useLogout} from '../../utils/useLogout';
 
 export const Profile = ({route}) => {
   const styles = createStyleSheet();
   const navigation = useNavigation();
+  const logout = useLogout();
 
   const handleEditProfile = () => {
     navigation.navigate(navigationConstants.PROFILE_ROUTE, {
@@ -36,6 +38,11 @@ export const Profile = ({route}) => {
             onPress={handleEditProfile}
           />
         </CardComponent>
+        <ButtonComponent
+          buttonText="Logout"
+          viewStyle={styles.cta}
+          onPress={logout}
+        />
       </ScrollView>
     </>
   );

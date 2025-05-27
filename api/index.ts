@@ -1,6 +1,6 @@
 import axios, {AxiosRequestHeaders, AxiosResponse} from 'axios';
 import {baseURL} from '../constants/api';
-import {handleLogout} from '../utils/handleLogout';
+import {useLogout} from '../utils/useLogout';
 import {getJwtToken} from '../utils/getJwtToken';
 
 const apiClient = axios.create({
@@ -29,8 +29,9 @@ apiClient.interceptors.response.use(
     return response;
   },
   error => {
+    const logout = useLogout();
     if (error.response?.status === 400) {
-      handleLogout();
+      logout();
       console.log('Unauthorized access. Redirecting to login...');
     }
 
