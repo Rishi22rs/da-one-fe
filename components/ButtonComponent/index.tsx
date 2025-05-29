@@ -3,12 +3,12 @@ import {defaultTheme} from '../../config/theme';
 import {hexToRgbA} from '../../utils/hexToRgba';
 import {createStyleSheet} from './style';
 
-interface ButtonComponentProps {
+interface ButtonComponentProps extends PressableProps {
   viewStyle?: PressableProps;
   textStyle?: TextStyle;
   children?: React.ReactNode;
   buttonText: String;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export const ButtonComponent = (props: ButtonComponentProps) => {

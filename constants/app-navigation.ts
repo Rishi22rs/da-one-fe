@@ -14,4 +14,6 @@ export const navigationConstants = {
   PROFILE_EDIT: 'profile-edit',
   STEPPER_SCREEN: 'stepper-screen',
   ONBOARDING: 'onboarding',
+  MATCH_ROUTE: 'match-route',
+  ITS_A_MATCH: 'its-a-match',
 };

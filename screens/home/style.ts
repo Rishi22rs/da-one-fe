@@ -9,6 +9,7 @@ export const createStyleSheet = () => {
       flexGrow: 1,
       backgroundColor: 'white',
       paddingHorizontal: 16,
+      paddingBottom: 100,
     },
     image: {
       height: 400,
@@ -71,6 +72,14 @@ export const createStyleSheet = () => {
       width: '100%',
       marginTop: 12,
       marginBottom: 6,
+    },
+    likeUnlikeCtaContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'row',
+      justifyContent: 'center',
     },
   });
 };
