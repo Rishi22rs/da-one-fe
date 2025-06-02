@@ -12,6 +12,7 @@ import {
 import {Header} from '../../components/Header';
 import {createStyleSheet} from './style';
 import socket from '../../utils/socket';
+import {useMatchedUserIds} from '../../api/match';
 
 const mockMessages = [
   {
@@ -19,33 +20,14 @@ const mockMessages = [
     text: 'Hey! Do you want to meet up this week?',
     time: '20:45',
     sender: 'other',
+    senderId: 'dkfn',
   },
-  {
-    id: '2',
-    text: 'Sure, we should go out or something at the weekend.',
-    time: '20:47',
-    sender: 'me',
-  },
-  {id: '3', text: 'Let’s do lunch on Sunday.', time: '20:50', sender: 'other'},
-  {
-    id: '4',
-    text: 'I can’t on Sunday. But I can on Saturday. We could go to the cinema after.',
-    time: '20:55',
-    sender: 'me',
-  },
-  {
-    id: '5',
-    text: 'Ok, then, sounds good. I’ll pick you up at 2 on Saturday.',
-    time: '21:02',
-    sender: 'other',
-  },
-  {id: '6', text: 'Cool, see you then!', time: '21:12', sender: 'me'},
-  {id: '7', text: 'See you!', time: '21:13', sender: 'other'},
 ];
 
 export const Chat = () => {
   const [messages, setMessages] = useState(mockMessages);
   const [input, setInput] = useState('');
+  const [ids, setIds] = useState();
   const flatListRef = useRef<FlatList>(null);
   const styles = createStyleSheet();
 
@@ -53,24 +35,27 @@ export const Chat = () => {
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({animated: false});
     }, 100);
-  }, []);
-
-  useEffect(() => {
-    socket.emit('joinRoom', {userId: 'user_id', otherUserId: 'other_user_id'});
-
-    socket.on('receiveMessage', msg => {
-      console.log('messagegege aay', msg);
-      setMessages(prev => [...prev, msg]);
-      flatListRef.current?.scrollToEnd({animated: true});
-    });
-
-    return () => {
-      socket.emit('leaveRoom', {
-        userId: 'user_id',
-        otherUserId: 'other_user_id',
+    useMatchedUserIds().then(res => {
+      setIds(res?.data);
+      socket.emit('joinRoom', {
+        userId: res?.data?.user_id,
+        otherUserId: res?.data?.other_user_id,
       });
-      socket.off('receiveMessage');
-    };
+
+      socket.on('receiveMessage', msg => {
+        if (msg?.senderId === res?.data?.user_id) return;
+        setMessages(prev => [...prev, {...msg, sender: 'other'}]);
+        flatListRef.current?.scrollToEnd({animated: true});
+      });
+
+      return () => {
+        socket.emit('leaveRoom', {
+          userId: res?.data?.user_id,
+          otherUserId: res?.data?.other_user_id,
+        });
+        socket.off('receiveMessage');
+      };
+    });
   }, []);
 
   const sendMessage = () => {
@@ -84,6 +69,8 @@ export const Chat = () => {
         minute: '2-digit',
       }),
       sender: 'me',
+      senderId: ids?.user_id,
+      recieverId: ids?.other_user_id,
     };
     socket.emit('sendMessage', newMessage);
     setMessages(prev => {

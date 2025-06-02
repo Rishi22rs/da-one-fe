@@ -12,3 +12,7 @@ export const useAddLikeDislike = (payload: object) => {
 export const useMatchedUserData = () => {
   return apiClient.get(`${baseURL}/matched-user-data`);
 };
+
+export const useMatchedUserIds = () => {
+  return apiClient.get(`${baseURL}/matched-user-ids`);
+};
