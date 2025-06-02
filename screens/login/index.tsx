@@ -21,7 +21,7 @@ export const Login = ({route}) => {
 
   const handleAuth = res => {
     AsyncStorage.setItem('jwt-token', res?.data?.token).then(() =>
-      navigation.navigate(navigationConstants.STEPPER_SCREEN),
+      navigation.replace(navigationConstants.STEPPER_SCREEN),
     );
   };
 

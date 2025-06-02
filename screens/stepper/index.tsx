@@ -9,13 +9,13 @@ export const Stepper = () => {
   useEffect(() => {
     useCurrentStep()
       .then(res => {
-        navigation.navigate(res?.data?.routeName, {
+        navigation.replace(res?.data?.routeName, {
           screen: res?.data?.route,
           params: {},
         });
       })
       .catch(() =>
-        navigation.navigate(navigationConstants.LOGIN_ROUTE, {
+        navigation.replace(navigationConstants.LOGIN_ROUTE, {
           screen: navigationConstants.LOGIN,
           params: {},
         }),

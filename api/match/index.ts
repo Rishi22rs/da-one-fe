@@ -8,3 +8,7 @@ export const useGetNearbyUsers = (payload: object) => {
 export const useAddLikeDislike = (payload: object) => {
   return apiClient.post(`${baseURL}/add-like-dislike`, payload);
 };
+
+export const useMatchedUserData = () => {
+  return apiClient.get(`${baseURL}/matched-user-data`);
+};

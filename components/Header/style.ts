@@ -11,7 +11,6 @@ export const createStyleSheet = () => {
       height: 72,
       backgroundColor: 'white',
       paddingHorizontal: 16,
-      marginBottom: 16,
     },
     title: {
       fontSize: 32,

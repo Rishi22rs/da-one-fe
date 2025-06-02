@@ -5,7 +5,7 @@ import {Stepper} from '../../screens/stepper';
 import {AuthenticationRoute} from './authentication-route';
 import {BottomTabs} from './bottom-tabs';
 import {ProfileRoute} from './profile-route';
-import {ItsAMatch} from '../../screens/match-screen';
+import {MatchMRoute} from './match-route';
 
 const MasterStack = createNativeStackNavigator();
 
@@ -31,7 +31,7 @@ export const AppNavigation = () => {
         />
         <MasterStack.Screen
           name={navigationConstants.MATCH_ROUTE}
-          component={ItsAMatch}
+          component={MatchMRoute}
         />
       </MasterStack.Navigator>
     </NavigationContainer>

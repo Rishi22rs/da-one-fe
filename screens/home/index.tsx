@@ -63,9 +63,8 @@ export const Home = ({route}) => {
   const handleLikeDislike = (isLike: boolean, payload?: object) => {
     isLike &&
       useAddLikeDislike(payload).then(res => {
-        console.log('ress', res);
         if (res?.data?.match) {
-          navigation.navigate(navigationConstants.MATCH_ROUTE, {
+          navigation.replace(navigationConstants.MATCH_ROUTE, {
             screen: navigationConstants.ITS_A_MATCH,
             params: {},
           });

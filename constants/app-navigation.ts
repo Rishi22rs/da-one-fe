@@ -16,4 +16,6 @@ export const navigationConstants = {
   ONBOARDING: 'onboarding',
   MATCH_ROUTE: 'match-route',
   ITS_A_MATCH: 'its-a-match',
+  CHAT: 'chat',
+  VIEW_ONLY_PROFILE: 'view-only-profile',
 };
