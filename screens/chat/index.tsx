@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   FlatList,
-  StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -13,19 +12,20 @@ import {Header} from '../../components/Header';
 import {createStyleSheet} from './style';
 import socket from '../../utils/socket';
 import {useMatchedUserIds} from '../../api/match';
+import {useAddChatsBetweenUsers, useGetChatsBetweenUsers} from '../../api/chat';
 
-const mockMessages = [
-  {
-    id: '1',
-    text: 'Hey! Do you want to meet up this week?',
-    time: '20:45',
-    sender: 'other',
-    senderId: 'dkfn',
-  },
-];
+// const mockMessages = [
+//   {
+//     id: '1',
+//     text: 'Hey! Do you want to meet up this week?',
+//     time: '20:45',
+//     sender: 'other',
+//     senderId: 'dkfn',
+//   },
+// ];
 
 export const Chat = () => {
-  const [messages, setMessages] = useState(mockMessages);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [ids, setIds] = useState();
   const flatListRef = useRef<FlatList>(null);
@@ -37,24 +37,30 @@ export const Chat = () => {
     }, 100);
     useMatchedUserIds().then(res => {
       setIds(res?.data);
-      socket.emit('joinRoom', {
-        userId: res?.data?.user_id,
+      useGetChatsBetweenUsers({
         otherUserId: res?.data?.other_user_id,
-      });
-
-      socket.on('receiveMessage', msg => {
-        if (msg?.senderId === res?.data?.user_id) return;
-        setMessages(prev => [...prev, {...msg, sender: 'other'}]);
-        flatListRef.current?.scrollToEnd({animated: true});
-      });
-
-      return () => {
-        socket.emit('leaveRoom', {
+      }).then(chats => {
+        console.log('chats', chats);
+        setMessages(chats?.data);
+        socket.emit('joinRoom', {
           userId: res?.data?.user_id,
           otherUserId: res?.data?.other_user_id,
         });
-        socket.off('receiveMessage');
-      };
+
+        socket.on('receiveMessage', msg => {
+          if (msg?.senderId === res?.data?.user_id) return;
+          setMessages(prev => [...prev, {...msg, sender: 'other'}]);
+          flatListRef.current?.scrollToEnd({animated: true});
+        });
+
+        return () => {
+          socket.emit('leaveRoom', {
+            userId: res?.data?.user_id,
+            otherUserId: res?.data?.other_user_id,
+          });
+          socket.off('receiveMessage');
+        };
+      });
     });
   }, []);
 
@@ -72,15 +78,21 @@ export const Chat = () => {
       senderId: ids?.user_id,
       recieverId: ids?.other_user_id,
     };
-    socket.emit('sendMessage', newMessage);
-    setMessages(prev => {
-      const updated = [...prev, newMessage];
 
-      setTimeout(() => {
-        flatListRef.current?.scrollToEnd({animated: true});
-      }, 100);
+    useAddChatsBetweenUsers({
+      toId: ids?.other_user_id,
+      message: input,
+    }).then(() => {
+      socket.emit('sendMessage', newMessage);
+      setMessages(prev => {
+        const updated = [...prev, newMessage];
 
-      return updated;
+        setTimeout(() => {
+          flatListRef.current?.scrollToEnd({animated: true});
+        }, 100);
+
+        return updated;
+      });
     });
 
     setInput('');

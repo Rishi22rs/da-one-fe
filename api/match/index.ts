@@ -16,3 +16,7 @@ export const useMatchedUserData = () => {
 export const useMatchedUserIds = () => {
   return apiClient.get(`${baseURL}/matched-user-ids`);
 };
+
+export const useUpdateUserLocation = (payload: object) => {
+  return apiClient.post(`${baseURL}/update-user-location`, payload);
+};

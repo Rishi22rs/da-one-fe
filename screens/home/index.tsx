@@ -2,15 +2,19 @@ import {Image, ScrollView, Text, View} from 'react-native';
 import {CardComponent} from '../../components/CardComponent';
 import {Header} from '../../components/Header';
 import {createStyleSheet} from './style';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {requestLocationPermission} from '../../utils/requestLocationPermission';
 import Geolocation from 'react-native-geolocation-service';
 import {ButtonComponent} from '../../components/ButtonComponent';
-import {useAddLikeDislike, useGetNearbyUsers} from '../../api/match';
+import {
+  useAddLikeDislike,
+  useGetNearbyUsers,
+  useUpdateUserLocation,
+} from '../../api/match';
 import {BigText} from './components/BigText';
 import {SmallText} from './components/SmallText';
 import {LineItems} from './components/LineItems';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {navigationConstants} from '../../constants/app-navigation';
 
 export const Home = ({route}) => {
@@ -18,18 +22,19 @@ export const Home = ({route}) => {
   const [locationGranted, setLocationGranted] = useState(false);
   const [nearbyUsers, setNearbyUsers] = useState([]);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
+  const [coords, setCoords] = useState();
   const navigation = useNavigation();
 
   useEffect(() => {
-    useGetNearbyUsers({
-      latitude: 37.7749,
-      longitude: -122.4194,
-      radius: 10,
-    }).then(res => {
-      console.log('nearbu', res?.data);
-      setNearbyUsers(res?.data);
-    });
-  }, []);
+    if (!!coords)
+      useGetNearbyUsers({
+        latitude: coords?.latitude,
+        longitude: coords?.longitude,
+        radius: 10,
+      }).then(res => {
+        setNearbyUsers(res?.data);
+      });
+  }, [coords]);
 
   const askLocationPermission = async () => {
     const granted = await requestLocationPermission();
@@ -46,19 +51,53 @@ export const Home = ({route}) => {
     askLocationPermission();
   }, []);
 
-  Geolocation.getCurrentPosition(
-    position => {
-      console.log('Location:', position);
-    },
-    error => {
-      console.error('Location error:', error);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 10000,
-    },
+  useFocusEffect(
+    useCallback(() => {
+      Geolocation.getCurrentPosition(
+        position => {
+          console.log('Location:', position);
+          setCoords({
+            latitude: position?.coords?.latitude,
+            longitude: position?.coords?.longitude,
+          });
+          useUpdateUserLocation({
+            latitude: position?.coords?.latitude,
+            longitude: position?.coords?.longitude,
+          });
+        },
+        error => {
+          console.error('Location error:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+        },
+      );
+    }, []),
   );
+
+  // Geolocation.getCurrentPosition(
+  //   position => {
+  //     console.log('Location:', position);
+  //     setCoords({
+  //       latitude: position?.coords?.latitude,
+  //       longitude: position?.coords?.longitude,
+  //     });
+  //     useUpdateUserLocation({
+  //       latitude: position?.coords?.latitude,
+  //       longitude: position?.coords?.longitude,
+  //     });
+  //   },
+  //   error => {
+  //     console.error('Location error:', error);
+  //   },
+  //   {
+  //     enableHighAccuracy: true,
+  //     timeout: 15000,
+  //     maximumAge: 10000,
+  //   },
+  // );
 
   const handleLikeDislike = (isLike: boolean, payload?: object) => {
     isLike &&
