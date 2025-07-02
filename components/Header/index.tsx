@@ -16,7 +16,7 @@ interface HeaderProps {
 
 export const Header = ({
   prefixTitle = 'Explore',
-  title = 'DaOne',
+  title = 'Onli',
   showRightComponent = false,
   onRightComponentClick,
   showBack = false,

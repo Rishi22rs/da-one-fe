@@ -3,6 +3,7 @@ export const navigationConstants = {
   LOGIN: 'login',
   HOME_ROUTE: 'home-route',
   HOME: 'home',
+  SWIPE_SCREEN: 'swipe-screen',
   VENDOR_DETAILS: 'vendor_details',
   OTP: 'otp',
   VENDOR_ADMIN_PANEL_ROUTE: 'vendor_admin_panel_route',

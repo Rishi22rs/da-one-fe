@@ -1,4 +1,11 @@
-import {Image, ScrollView, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  Text,
+  Pressable,
+  View,
+  ImageBackground,
+} from 'react-native';
 import {CardComponent} from '../../components/CardComponent';
 import {Header} from '../../components/Header';
 import {createStyleSheet} from './style';
@@ -16,6 +23,18 @@ import {SmallText} from './components/SmallText';
 import {LineItems} from './components/LineItems';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {navigationConstants} from '../../constants/app-navigation';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  SharedTransition,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import LinearGradient from 'react-native-linear-gradient';
+import {hexToRgbA} from '../../utils/hexToRgba';
+import {screenHeight} from '../../utils/dimensions';
 
 export const Home = ({route}) => {
   const styles = createStyleSheet();
@@ -23,9 +42,16 @@ export const Home = ({route}) => {
   const [nearbyUsers, setNearbyUsers] = useState([]);
   const [currentUserIndex, setCurrentUserIndex] = useState(0);
   const [coords, setCoords] = useState();
+  const [isDetailShown, setIsDetailShown] = useState(false);
+  const [showLikeUnlikeView, setShowLikeUnlikeView] = useState(0);
   const navigation = useNavigation();
 
-  useEffect(() => {
+  const cardHeight = {
+    detailsNotShownHeight: screenHeight - 170,
+    detailsShowHeight: screenHeight / 2,
+  };
+
+  const getNearyByUsers = () => {
     if (!!coords)
       useGetNearbyUsers({
         latitude: coords?.latitude,
@@ -34,6 +60,10 @@ export const Home = ({route}) => {
       }).then(res => {
         setNearbyUsers(res?.data);
       });
+  };
+
+  useEffect(() => {
+    getNearyByUsers();
   }, [coords]);
 
   const askLocationPermission = async () => {
@@ -77,28 +107,6 @@ export const Home = ({route}) => {
     }, []),
   );
 
-  // Geolocation.getCurrentPosition(
-  //   position => {
-  //     console.log('Location:', position);
-  //     setCoords({
-  //       latitude: position?.coords?.latitude,
-  //       longitude: position?.coords?.longitude,
-  //     });
-  //     useUpdateUserLocation({
-  //       latitude: position?.coords?.latitude,
-  //       longitude: position?.coords?.longitude,
-  //     });
-  //   },
-  //   error => {
-  //     console.error('Location error:', error);
-  //   },
-  //   {
-  //     enableHighAccuracy: true,
-  //     timeout: 15000,
-  //     maximumAge: 10000,
-  //   },
-  // );
-
   const handleLikeDislike = (isLike: boolean, payload?: object) => {
     isLike &&
       useAddLikeDislike(payload).then(res => {
@@ -123,116 +131,206 @@ export const Home = ({route}) => {
     }
   };
 
+  const imageHeight = useSharedValue(screenHeight - 170);
+
+  const animatedImageStyle = useAnimatedStyle(() => {
+    return {
+      height: imageHeight.value,
+    };
+  });
+
+  console.log('isDetailShown', isDetailShown, nearbyUsers);
+
+  const handleLikeUnlikeView = (like: -1 | 1 = -1) => {
+    setShowLikeUnlikeView(like);
+
+    handleLikeDislike(true, {
+      other_user_id: nearbyUsers?.[currentUserIndex]?.userId,
+    });
+
+    setTimeout(() => {
+      setShowLikeUnlikeView(0);
+    }, 1000);
+  };
+
+  const renderCard = () => {
+    const CardComponent = isDetailShown ? ScrollView : View;
+    return (
+      <CardComponent
+        style={!isDetailShown ? styles.container : {}}
+        contentContainerStyle={styles.container}>
+        <Animated.View style={styles.imageContainer}>
+          <Pressable
+            onPress={() => {
+              if (!isDetailShown) {
+                imageHeight.value = withSpring(cardHeight.detailsShowHeight);
+                setIsDetailShown(true);
+              }
+            }}>
+            <Animated.Image
+              source={{
+                uri: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false',
+              }}
+              style={[styles.profileImage, animatedImageStyle]}
+            />
+            {!isDetailShown ? (
+              <View>
+                <LinearGradient
+                  colors={[
+                    hexToRgbA('#000000', 90),
+                    hexToRgbA('#000000', 80),
+                    hexToRgbA('#000000', 50),
+                    'transparent',
+                  ]}
+                  start={{x: 0, y: 1}}
+                  end={{x: 0, y: 0}}
+                  style={styles.userDetailImageTop}>
+                  <Text style={styles.userDetailImageTopText}>
+                    {
+                      nearbyUsers?.[currentUserIndex]?.segregatedList?.[0]
+                        .content
+                    }
+                  </Text>
+                </LinearGradient>
+              </View>
+            ) : null}
+          </Pressable>
+          {isDetailShown ? (
+            <Pressable
+              onPress={() => {
+                imageHeight.value = withSpring(
+                  cardHeight.detailsNotShownHeight,
+                );
+                setIsDetailShown(false);
+              }}
+              style={styles.backBtn}>
+              <Icon name="chevron-back" size={24} color="#000" />
+            </Pressable>
+          ) : null}
+        </Animated.View>
+        {/* Buttons below image */}
+        <View style={styles.actionButtons}>
+          <Pressable
+            style={styles.circleButtonBig}
+            onPress={() => handleLikeUnlikeView(-1)}>
+            <Icon name="close" size={24} color="#ff3b30" />
+          </Pressable>
+          <Pressable
+            style={styles.circleButtonBig}
+            onPress={() => handleLikeUnlikeView(1)}>
+            <Icon name="heart" size={28} color="#ff2d55" />
+          </Pressable>
+        </View>
+
+        {/* Profile Info */}
+        <View style={styles.profileInfo}>
+          {nearbyUsers?.[currentUserIndex]?.segregatedList?.map(user => {
+            return (
+              <View>
+                {getCurrentSection(user)}
+                <View style={styles.seperator} />
+              </View>
+            );
+          })}
+        </View>
+      </CardComponent>
+    );
+  };
+
   return (
     <>
-      <Header />
-      <View style={{flex: 1}}>
-        {locationGranted ? (
-          <View>
-            <ScrollView contentContainerStyle={styles.background}>
-              <>
-                <CardComponent viewStyle={{padding: 0}}>
-                  <Image
-                    source={{
-                      uri:
-                        'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                        undefined,
-                    }}
-                    style={[styles.image]}
-                  />
-                </CardComponent>
-                <View style={{overflow: 'visible', gap: 8, marginTop: 8}}>
-                  {nearbyUsers?.[currentUserIndex]?.segregatedList?.map(user =>
-                    getCurrentSection(user),
-                  )}
-                  {/* <CardComponent heading="Basics">
-                    <Text style={styles.tableTitle}>Communication</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Image
-                        source={{
-                          uri:
-                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                            undefined,
-                        }}
-                        style={{height: 14, width: 14}}
-                      />
-                      <Text style={styles.description}>Better in person</Text>
-                    </View>
-                    <View style={styles.seperator}></View>
-                    <Text style={styles.tableTitle}>Communication</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Image
-                        source={{
-                          uri:
-                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                            undefined,
-                        }}
-                        style={{height: 14, width: 14}}
-                      />
-                      <Text style={styles.description}>Better in person</Text>
-                    </View>
-                    <View style={styles.seperator}></View>
-                    <Text style={styles.tableTitle}>Communication</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Image
-                        source={{
-                          uri:
-                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                            undefined,
-                        }}
-                        style={{height: 14, width: 14}}
-                      />
-                      <Text style={styles.description}>Better in person</Text>
-                    </View>
-                  </CardComponent> */}
-                </View>
-              </>
-            </ScrollView>
-            <View style={styles.likeUnlikeCtaContainer}>
-              <ButtonComponent
-                onPress={() =>
-                  handleLikeDislike(true, {
-                    other_user_id: nearbyUsers?.[currentUserIndex]?.userId,
-                  })
-                }
-                buttonText={'like'}
-              />
-              <ButtonComponent
-                onPress={() => handleLikeDislike(false)}
-                buttonText={'No Like'}
-              />
+      {showLikeUnlikeView ? (
+        <View style={{zIndex: 10}}>
+          <Animated.View
+            style={styles.likeUnlikeView}
+            key={`likeUnlike-${showLikeUnlikeView}`}
+            entering={FadeIn.duration(400)}
+            exiting={FadeOut.duration(400)}>
+            <View>
+              {showLikeUnlikeView === -1 ? (
+                <Icon name="close" size={240} color="#ff3b30" />
+              ) : (
+                <Icon name="heart" size={240} color="#ff2d55" />
+              )}
             </View>
-          </View>
-        ) : (
-          <View style={styles.background}>
-            <Text style={styles.nameText}>
-              We need your location to serve users near you.
-            </Text>
-            <ButtonComponent
-              buttonText="Allow permission"
-              onPress={askLocationPermission}
-            />
-          </View>
-        )}
-      </View>
+          </Animated.View>
+        </View>
+      ) : null}
+      <Header />
+      {locationGranted ? (
+        <View>{renderCard()}</View>
+      ) : (
+        <View style={styles.background}>
+          <Text style={styles.nameText}>
+            We need your location to serve users near you.
+          </Text>
+          <ButtonComponent
+            buttonText="Allow permission"
+            onPress={askLocationPermission}
+          />
+        </View>
+      )}
     </>
   );
 };
+
+{
+  /* <CardComponent heading="Basics">
+                    <Text style={styles.tableTitle}>Communication</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                        paddingHorizontal: 8,
+                      }}>
+                      <Image
+                        source={{
+                          uri:
+                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
+                            undefined,
+                        }}
+                        style={{height: 14, width: 14}}
+                      />
+                      <Text style={styles.description}>Better in person</Text>
+                    </View>
+                    <View style={styles.seperator}></View>
+                    <Text style={styles.tableTitle}>Communication</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                        paddingHorizontal: 8,
+                      }}>
+                      <Image
+                        source={{
+                          uri:
+                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
+                            undefined,
+                        }}
+                        style={{height: 14, width: 14}}
+                      />
+                      <Text style={styles.description}>Better in person</Text>
+                    </View>
+                    <View style={styles.seperator}></View>
+                    <Text style={styles.tableTitle}>Communication</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                        paddingHorizontal: 8,
+                      }}>
+                      <Image
+                        source={{
+                          uri:
+                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
+                            undefined,
+                        }}
+                        style={{height: 14, width: 14}}
+                      />
+                      <Text style={styles.description}>Better in person</Text>
+                    </View>
+                  </CardComponent> */
+}
