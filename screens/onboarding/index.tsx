@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
-import {Platform, Text, View} from 'react-native';
+import {Platform, Pressable, Text, View} from 'react-native';
 import {ButtonComponent} from '../../components/ButtonComponent';
 import {Chip} from '../../components/ChipComponent';
 import {Header} from '../../components/Header';
@@ -11,6 +11,7 @@ import {createStyleSheet} from './style';
 import {useAddUserInfo} from '../../api/onboarding';
 import {useNavigation} from '@react-navigation/native';
 import {navigationConstants} from '../../constants/app-navigation';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const genders = ['Woman', 'Man', 'More'];
 const orientations = ['Straight', 'Gay', 'Lesbian', 'Bisexual', 'Asexual'];
@@ -84,21 +85,17 @@ export const Onboarding = () => {
         return (
           <>
             <Text style={styles.title}>My Birthday is</Text>
-            {/* <Pressable
-              onPress={() => setShowDatePicker(true)}
-              style={styles.dateInput}>
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: defaultTheme.brown,
-                }}>
-                {formData.birthday.toDateString()}
-              </Text>
-            </Pressable> */}
+
             <Chip
-              label={formData.birthday?.toDateString()}
+              label={formData?.birthday?.toDateString()}
               onSelect={() => setShowDatePicker(true)}
+              chipStyle={{
+                paddingVertical: 12,
+                borderColor: hexToRgbA(defaultTheme.brown, 0.3),
+              }}
+              labelStyle={styles.labelStyle}
             />
+
             {showDatePicker && (
               <DateTimePicker
                 mode="date"
@@ -122,11 +119,18 @@ export const Onboarding = () => {
             <View style={styles.chipContainer}>
               {genders.map(gen => (
                 <Chip
+                  chipStyle={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                  }}
                   label={gen}
                   onSelect={selected => {
                     setFormData(prev => ({...prev, gender: selected}));
                   }}
                   selected={gen === formData.gender}
+                  labelStyle={{
+                    fontSize: 14,
+                  }}
                 />
               ))}
             </View>
@@ -139,11 +143,18 @@ export const Onboarding = () => {
             <View style={styles.chipContainer}>
               {orientations.map(orient => (
                 <Chip
+                  chipStyle={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                  }}
                   label={orient}
                   onSelect={selected =>
                     setFormData(prev => ({...prev, orientation: selected}))
                   }
                   selected={formData.orientation === orient}
+                  labelStyle={{
+                    fontSize: 14,
+                  }}
                 />
               ))}
             </View>
@@ -156,11 +167,18 @@ export const Onboarding = () => {
             <View style={styles.chipContainer}>
               {passions.map(passion => (
                 <Chip
+                  chipStyle={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                  }}
                   label={passion}
                   onSelect={selected => {
                     togglePassion(selected);
                   }}
                   selected={formData.passions.includes(passion)}
+                  labelStyle={{
+                    fontSize: 14,
+                  }}
                 />
               ))}
             </View>
@@ -183,12 +201,13 @@ export const Onboarding = () => {
 
   return (
     <>
-      <Header
-        prefixTitle="Onboarding"
-        showBack={step !== 0}
-        onBackPress={prevStep}
-      />
+      <Header prefixTitle="Onboarding" />
       <View style={styles.background}>
+        {step !== 0 ? (
+          <Pressable onPress={prevStep} style={styles.backBtn}>
+            <Icon name="chevron-back" size={34} color="#000" />
+          </Pressable>
+        ) : null}
         <View style={styles.container}>{renderStepContent()}</View>
         {step < 5 && (
           <ButtonComponent

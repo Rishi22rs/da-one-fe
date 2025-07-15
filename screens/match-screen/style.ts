@@ -1,93 +1,88 @@
 import {StyleSheet} from 'react-native';
+import {screenWidth} from '../../utils/dimensions';
 
-export const createStyleSheet = () => {
-  return StyleSheet.create({
+export const createStyleSheet = () =>
+  StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
-      paddingVertical: 40,
-      backgroundColor: '#fff',
+      backgroundColor: 'white',
+      paddingTop: 60,
+      paddingHorizontal: 20,
     },
-    header: {
-      textAlign: 'center',
-      fontSize: 16,
+    heartWrapper: {
+      alignItems: 'center',
       marginBottom: 20,
     },
-    matchText: {
-      fontSize: 28,
-      color: '#ff4081',
-      fontWeight: 'bold',
+    heartCircle: {
+      backgroundColor: '#fff0f7',
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      shadowOffset: {width: 0, height: 2},
+    },
+    heartText: {
+      fontSize: 24,
+    },
+    cardContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
       marginBottom: 20,
+    },
+    cardImage: {
+      width: screenWidth * 0.35,
+      height: screenWidth * 0.45,
+      borderRadius: 16,
+      marginHorizontal: -10,
+      resizeMode: 'cover',
+    },
+    title: {
+      fontSize: 32,
       fontFamily: 'Cochin',
+      color: '#f05b7f',
+      fontWeight: '600',
     },
-    imageContainer: {
-      flexDirection: 'row',
-      marginBottom: 30,
+    subtitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginTop: 8,
+      color: '#f05b7f',
     },
-    profileImage: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      borderColor: '#ff4081',
-      borderWidth: 3,
-      marginHorizontal: 10,
-    },
-    dotsContainer: {
-      flexDirection: 'row',
-      marginBottom: 20,
-    },
-    dot: {
-      width: 8,
-      height: 8,
-      backgroundColor: '#ccc',
-      borderRadius: 4,
-      marginHorizontal: 4,
-    },
-    dotActive: {
-      width: 8,
-      height: 8,
-      backgroundColor: '#ff4081',
-      borderRadius: 4,
-      marginHorizontal: 4,
-    },
-    termsText: {
-      fontSize: 12,
+    description: {
+      color: 'gray',
       textAlign: 'center',
-      color: '#888',
-      marginBottom: 30,
+      marginVertical: 8,
     },
-    link: {
-      textDecorationLine: 'underline',
-      color: '#000',
+    sayHelloButton: {
+      width: '100%',
+      paddingVertical: 14,
+      borderRadius: 10,
+      marginTop: 24,
+      alignItems: 'center',
     },
-    buttonContainer: {
-      flexDirection: 'row',
-      marginBottom: 20,
-    },
-    button: {
-      paddingVertical: 12,
-      paddingHorizontal: 25,
-      borderRadius: 25,
-      marginHorizontal: 10,
-    },
-    fbButton: {
-      backgroundColor: '#3b5998',
-    },
-    fbText: {
-      color: '#fff',
+    sayHelloText: {
+      color: 'white',
       fontWeight: 'bold',
+      fontSize: 16,
     },
-    googleButton: {
-      backgroundColor: '#db4437',
+    keepSwipingButton: {
+      marginTop: 16,
+      borderWidth: 1,
+      borderColor: '#ff5c8d',
+      paddingVertical: 14,
+      borderRadius: 10,
+      width: '100%',
+      alignItems: 'center',
     },
-    googleText: {
-      color: '#fff',
+    keepSwipingText: {
+      color: '#ff5c8d',
       fontWeight: 'bold',
-    },
-    footerText: {
-      fontSize: 12,
-      color: '#888',
-      marginTop: 10,
+      fontSize: 16,
     },
   });
-};

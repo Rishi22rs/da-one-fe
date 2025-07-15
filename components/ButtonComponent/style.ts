@@ -20,5 +20,21 @@ export const createStyleSheet = () => {
       fontWeight: '600',
       color: 'white',
     },
+    logoutButton: {
+      marginTop: 20,
+      padding: 14,
+      borderRadius: 12,
+    },
+    logoutContent: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 8,
+    },
+    logoutText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '600',
+    },
   });
 };

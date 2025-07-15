@@ -22,7 +22,7 @@ export const createStyleSheet = () => {
     },
     selectedChip: {
       borderWidth: 1,
-      borderColor: '#C8B4F0',
+      borderColor: '#f96163',
     },
   });
 };

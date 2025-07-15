@@ -140,11 +140,25 @@ export const createStyleSheet = () => {
       paddingVertical: 50,
       left: 0,
       right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
     userDetailImageTopText: {
       color: defaultTheme.cream,
       fontWeight: '700',
       fontSize: 30,
+    },
+    fullscreenOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 999,
+      backgroundColor: 'rgba(0,0,0,0.4)', // optional: slight dim effect
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
 };

@@ -6,6 +6,7 @@ export const createStyleSheet = () =>
   StyleSheet.create({
     background: {
       paddingHorizontal: 16,
+      backgroundColor: 'white',
     },
     wrapper: {
       flex: 1,
@@ -80,5 +81,9 @@ export const createStyleSheet = () =>
     },
     backIcon: {
       paddingVertical: 12,
+    },
+    backBtn: {
+      paddingVertical: 24,
+      marginLeft: -8,
     },
   });

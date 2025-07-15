@@ -179,12 +179,20 @@ import {
   Image,
   Pressable,
   ScrollView,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {Header} from '../../components/Header';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useGetUserInfo} from '../../api/profile';
+import {TextComponent} from '../../components/TextComponent';
+import {createStyleSheet} from './style';
+import {TextInputComponent} from '../../components/TextInputComponent';
+import {Chip} from '../../components/ChipComponent';
+import {hexToRgbA} from '../../utils/hexToRgba';
+import {defaultTheme} from '../../config/theme';
+import {ButtonComponent} from '../../components/ButtonComponent';
 
 export const ProfileEdit = () => {
   const [name, setName] = useState('Mark Johnson');
@@ -196,106 +204,140 @@ export const ProfileEdit = () => {
     '1901 Thornridge Cir. Shiloh, Hawaii 81063',
   );
 
+  const [formData, setFormData] = useState({});
+
+  const style = createStyleSheet();
+
   useEffect(() => {
     useGetUserInfo().then(res => {
       console.log('resss', res);
-      // setFormData(res?.data?.data);
+      setFormData(res?.data?.data);
     });
   }, []);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{paddingBottom: 40}}>
+    <>
       <Header />
-
-      <View style={styles.profileSection}>
-        <View style={styles.avatarContainer}>
-          <Image
-            source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}}
-            style={styles.avatar}
-          />
-          <Pressable style={styles.editIcon}>
-            <Icon name="create" size={14} color="#fff" />
-          </Pressable>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{paddingBottom: 40}}>
+        <View style={styles.profileSection}>
+          <View style={styles.avatarContainer}>
+            <Image
+              source={{uri: 'https://randomuser.me/api/portraits/men/32.jpg'}}
+              style={styles.avatar}
+            />
+            <Pressable style={styles.editIcon}>
+              <Icon name="create" size={14} color="#fff" />
+            </Pressable>
+          </View>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.email}>{email}</Text>
         </View>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.email}>{email}</Text>
-      </View>
 
-      <View style={styles.form}>
-        <FormField label="Name" value={name} onChangeText={setName} />
-        <FormField
-          label="Email Address"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <FormField
-          label="Mobile Number"
-          value={phone}
-          onChangeText={setPhone}
-        />
-        <FormField
-          label="Date of Birth"
-          value={dob}
-          onPress={() => setShowDatePicker(true)}
-          iconRight={<Icon name="calendar-outline" size={18} color="#000" />}
-        />
-        <FormField
-          label="Enter Address"
-          value={address}
-          onChangeText={setAddress}
-        />
-      </View>
-
-      <LinearGradient
-        colors={['#f96163', '#f74a6e']}
-        style={styles.saveButton}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}>
-        <Pressable onPress={() => {}} style={styles.saveContent}>
-          <Text style={styles.saveText}>Save</Text>
-        </Pressable>
-      </LinearGradient>
-      {showDatePicker && (
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) {
-              const formatted = selectedDate.toLocaleDateString('en-GB');
-              setDob(formatted); // e.g. 14/02/2023
-            }
-          }}
-        />
-      )}
-    </ScrollView>
+        <View style={styles.form}>
+          <View>
+            <TextInputComponent
+              labelStyle={style.labelStyle}
+              placeholder="Your Name"
+              label="Name"
+              numOfLines={1}
+              value={formData?.name}
+              keyboardType="phone-pad"
+            />
+          </View>
+          <View>
+            <TextInputComponent
+              labelStyle={style.labelStyle}
+              placeholder="Your Phone Number"
+              label="Phone Number"
+              numOfLines={1}
+              value={formData?.phone_number}
+              keyboardType="phone-pad"
+            />
+          </View>
+          <View>
+            <TextInputComponent
+              labelStyle={style.labelStyle}
+              placeholder="About me"
+              label="Bio"
+              numOfLines={5}
+              value={formData?.bio}
+            />
+          </View>
+          <View>
+            <TextComponent viewStyle={style.labelStyle}>Birthday</TextComponent>
+            <Chip
+              label={formData?.birthday}
+              onSelect={() => setShowDatePicker(true)}
+              chipStyle={{
+                paddingTop: 12,
+                paddingBottom: 4,
+                borderColor: hexToRgbA(defaultTheme.brown, 0.3),
+              }}
+              labelStyle={style.labelStyle}
+            />
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              mode="date"
+              value={new Date(formData.birthday)}
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, date) => {
+                if (date) {
+                  setFormData(prev => ({...prev, birthday: date}));
+                }
+                setShowDatePicker(false);
+              }}
+              maximumDate={new Date()}
+            />
+          )}
+        </View>
+        {showDatePicker && (
+          <DateTimePicker
+            value={new Date()}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                const formatted = selectedDate.toLocaleDateString('en-GB');
+                setDob(formatted); // e.g. 14/02/2023
+              }
+            }}
+          />
+        )}
+      </ScrollView>
+      <ButtonComponent
+        buttonText={'Update'}
+        viewStyle={{position: 'absolute', bottom: 16, left: 16, right: 16}}
+      />
+    </>
   );
 };
 
-const FormField = ({label, value, onChangeText, iconRight, onPress}) => (
-  <View style={styles.inputGroup}>
-    <Text style={styles.label}>{label}</Text>
-    <Pressable onPress={onPress} style={styles.inputWrapper}>
-      <TextInput
-        value={value}
-        editable={!onPress}
-        onChangeText={onChangeText}
-        style={styles.input}
-        placeholder={label}
-        placeholderTextColor="#aaa"
-        pointerEvents={onPress ? 'none' : 'auto'}
-      />
-      {iconRight && <View style={styles.iconRight}>{iconRight}</View>}
-    </Pressable>
-  </View>
-);
+// const FormField = ({label, value, onChangeText, iconRight, onPress}) => (
+//   <View style={styles.inputGroup}>
+//     <Text style={styles.label}>{label}</Text>
+//     <Pressable onPress={onPress} style={styles.inputWrapper}>
+//       <TextInput
+//         value={value}
+//         editable={!onPress}
+//         onChangeText={onChangeText}
+//         style={styles.input}
+//         placeholder={label}
+//         placeholderTextColor="#aaa"
+//         pointerEvents={onPress ? 'none' : 'auto'}
+//       />
+//       {iconRight && <View style={styles.iconRight}>{iconRight}</View>}
+//     </Pressable>
+//   </View>
+// );
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    marginBottom: 42,
   },
   backButton: {
     margin: 16,
@@ -339,6 +381,7 @@ const styles = StyleSheet.create({
   form: {
     paddingHorizontal: 20,
     marginTop: 20,
+    gap: 20,
   },
   inputGroup: {
     marginBottom: 16,

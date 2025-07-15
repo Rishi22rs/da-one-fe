@@ -1,4 +1,4 @@
-import {ScrollView, View, Image} from 'react-native';
+import {ScrollView, View, Image, Pressable} from 'react-native';
 import {createStyleSheet} from './style';
 import {BigText} from '../home/components/BigText';
 import {SmallText} from '../home/components/SmallText';
@@ -34,7 +34,7 @@ export const ViewOnlyProfile = ({route}: {route: unknown}) => {
     <>
       <Header />
       <ScrollView contentContainerStyle={styles.background}>
-        <>
+        {/* <>
           <CardComponent viewStyle={{padding: 0}}>
             <Image
               source={{
@@ -47,66 +47,33 @@ export const ViewOnlyProfile = ({route}: {route: unknown}) => {
           </CardComponent>
           <View style={{overflow: 'visible', gap: 8, marginTop: 8}}>
             {!!profileData && profileData?.map(user => getCurrentSection(user))}
-            {/* <CardComponent heading="Basics">
-                    <Text style={styles.tableTitle}>Communication</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Image
-                        source={{
-                          uri:
-                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                            undefined,
-                        }}
-                        style={{height: 14, width: 14}}
-                      />
-                      <Text style={styles.description}>Better in person</Text>
-                    </View>
-                    <View style={styles.seperator}></View>
-                    <Text style={styles.tableTitle}>Communication</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Image
-                        source={{
-                          uri:
-                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                            undefined,
-                        }}
-                        style={{height: 14, width: 14}}
-                      />
-                      <Text style={styles.description}>Better in person</Text>
-                    </View>
-                    <View style={styles.seperator}></View>
-                    <Text style={styles.tableTitle}>Communication</Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                        paddingHorizontal: 8,
-                      }}>
-                      <Image
-                        source={{
-                          uri:
-                            'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false' ||
-                            undefined,
-                        }}
-                        style={{height: 14, width: 14}}
-                      />
-                      <Text style={styles.description}>Better in person</Text>
-                    </View>
-                  </CardComponent> */}
           </View>
-        </>
+        </> */}
+        <CardComponent viewStyle={styles.container}>
+          <View style={styles.imageContainer}>
+            <Pressable>
+              <Image
+                source={{
+                  uri: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/poster/s/d/v/medium-anime-girls-fantasy-anime-girls-hd-matte-finish-poster-original-imagh8k9taqepyzs.jpeg?q=90&crop=false',
+                }}
+                style={[styles.profileImage]}
+              />
+            </Pressable>
+          </View>
+
+          {/* Profile Info */}
+          <View style={styles.profileInfo}>
+            {!!profileData &&
+              profileData?.map(user => {
+                return (
+                  <View>
+                    {getCurrentSection(user)}
+                    <View style={styles.seperator} />
+                  </View>
+                );
+              })}
+          </View>
+        </CardComponent>
       </ScrollView>
     </>
   );

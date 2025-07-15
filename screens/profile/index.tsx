@@ -65,6 +65,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useLogout} from '../../utils/useLogout';
 import {navigationConstants} from '../../constants/app-navigation';
 import {Header} from '../../components/Header';
+import {ButtonComponent} from '../../components/ButtonComponent';
+import Animated, {SlideInDown} from 'react-native-reanimated';
 
 export const Profile = () => {
   const styles = createStyleSheet();
@@ -79,11 +81,6 @@ export const Profile = () => {
   };
 
   const profileOptions = [
-    {
-      label: 'Personal Detail',
-      icon: 'person-outline',
-      onPress: handleEditProfile,
-    },
     {label: 'Settings', icon: 'settings-outline'},
     {label: 'Terms & Conditions', icon: 'globe-outline'},
     {label: 'Privacy Policy', icon: 'notifications-outline'},
@@ -102,7 +99,7 @@ export const Profile = () => {
             }}
             style={styles.avatar}
           />
-          <Pressable style={styles.editIcon}>
+          <Pressable style={styles.editIcon} onPress={handleEditProfile}>
             <Icon name="create" size={14} color="#fff" />
           </Pressable>
         </View>
@@ -114,18 +111,20 @@ export const Profile = () => {
         data={profileOptions}
         keyExtractor={item => item.label}
         contentContainerStyle={styles.optionsContainer}
-        renderItem={({item}) => (
-          <Pressable onPress={item?.onPress} style={styles.optionRow}>
-            <View style={styles.optionLeft}>
-              <Icon name={item.icon} size={20} color="#000" />
-              <Text style={styles.optionLabel}>{item.label}</Text>
-            </View>
-            <Icon name="chevron-forward" size={20} color="#000" />
-          </Pressable>
+        renderItem={({item, index}) => (
+          <Animated.View entering={SlideInDown.duration(200 + 100 * index)}>
+            <Pressable onPress={item?.onPress} style={styles.optionRow}>
+              <View style={styles.optionLeft}>
+                <Icon name={item.icon} size={20} color="#000" />
+                <Text style={styles.optionLabel}>{item.label}</Text>
+              </View>
+              <Icon name="chevron-forward" size={20} color="#000" />
+            </Pressable>
+          </Animated.View>
         )}
       />
 
-      <LinearGradient
+      {/* <LinearGradient
         colors={['#f96163', '#f74a6e']}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 1}}
@@ -134,7 +133,13 @@ export const Profile = () => {
           <Icon name="log-out-outline" size={20} color="#fff" />
           <Text style={styles.logoutText}>Logout</Text>
         </Pressable>
-      </LinearGradient>
+      </LinearGradient> */}
+      <ButtonComponent
+        buttonText={'Logout'}
+        showIcon
+        onPress={logout}
+        viewStyle={{marginHorizontal: 16, marginBottom: 16}}
+      />
     </SafeAreaView>
   );
 };

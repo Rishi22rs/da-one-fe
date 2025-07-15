@@ -1,4 +1,6 @@
 import {StyleSheet} from 'react-native';
+import {screenWidth} from '../../utils/dimensions';
+import {defaultTheme} from '../../config/theme';
 
 export const createStyleSheet = () => {
   return StyleSheet.create({
@@ -9,13 +11,14 @@ export const createStyleSheet = () => {
     },
     loginContainer: {
       position: 'absolute',
-      backgroundColor: 'white',
-      bottom: 0,
-      width: '100%',
+      backgroundColor: '#fdf6f7',
+      left: 16,
+      right: 16,
+      bottom: 16,
+      width: screenWidth - 32,
       paddingVertical: 32,
       paddingHorizontal: 32,
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
+      borderRadius: 16,
     },
     buttonText: {
       color: 'white',
@@ -48,6 +51,33 @@ export const createStyleSheet = () => {
     },
     otpContainer: {
       marginVertical: 30,
+    },
+    titleBackContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 16,
+      marginBottom: 16,
+      marginLeft: -4,
+    },
+    backBtn: {
+      marginBottom: 8,
+    },
+    carouselTitle: {
+      fontSize: 32,
+      textAlign: 'center',
+      color: defaultTheme.black,
+      fontWeight: '600',
+      marginBottom: 16,
+    },
+    carouselSubTitle: {
+      fontSize: 16,
+      textAlign: 'center',
+      color: defaultTheme.black,
+      fontWeight: '400',
+    },
+    textContainer: {
+      paddingHorizontal: 64,
+      marginTop: 32,
     },
   });
 };
