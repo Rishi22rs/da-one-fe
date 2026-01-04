@@ -7,6 +7,7 @@ export const createStyleSheet = () =>
     background: {
       paddingHorizontal: 16,
       backgroundColor: 'white',
+      paddingTop: 16,
     },
     wrapper: {
       flex: 1,
@@ -83,7 +84,7 @@ export const createStyleSheet = () =>
       paddingVertical: 12,
     },
     backBtn: {
-      paddingVertical: 24,
+      paddingBottom: 24,
       marginLeft: -8,
     },
   });

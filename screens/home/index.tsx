@@ -74,7 +74,6 @@ export const Home = ({route}) => {
   const askLocationPermission = async () => {
     const granted = await requestLocationPermission();
     if (granted) {
-      console.log('Permission granted');
       setLocationGranted(true);
     } else {
       console.log('Permission denied');
@@ -90,7 +89,6 @@ export const Home = ({route}) => {
     useCallback(() => {
       Geolocation.getCurrentPosition(
         position => {
-          console.log('Location:', position);
           setCoords({
             latitude: position?.coords?.latitude,
             longitude: position?.coords?.longitude,
@@ -113,9 +111,10 @@ export const Home = ({route}) => {
   );
 
   const handleLikeDislike = (payload?: object) => {
+    console.log('payload', payload);
     useAddLikeDislike(payload)
       .then(res => {
-        if (res?.data?.match) {
+        if (res?.data?.matched) {
           navigation.replace(navigationConstants.MATCH_ROUTE, {
             screen: navigationConstants.ITS_A_MATCH,
             params: {},
@@ -151,6 +150,7 @@ export const Home = ({route}) => {
   console.log('isDetailShown', isDetailShown, nearbyUsers);
 
   const handleLikeUnlikeView = (like: -1 | 1 = -1) => {
+    // setTimeout(() => {
     setShowLikeUnlikeView(like);
     handleLikeDislike({
       other_user_id: nearbyUsers?.[currentUserIndex]?.userId,
@@ -159,6 +159,13 @@ export const Home = ({route}) => {
     setTimeout(() => {
       setShowLikeUnlikeView(0);
     }, 1000);
+    // }, 500);
+    // handlebackPress();
+  };
+
+  const handlebackPress = () => {
+    imageHeight.value = withSpring(cardHeight.detailsNotShownHeight);
+    setIsDetailShown(false);
   };
 
   const renderCard = () => {
@@ -213,14 +220,7 @@ export const Home = ({route}) => {
             ) : null}
           </Pressable>
           {isDetailShown ? (
-            <Pressable
-              onPress={() => {
-                imageHeight.value = withSpring(
-                  cardHeight.detailsNotShownHeight,
-                );
-                setIsDetailShown(false);
-              }}
-              style={styles.backBtn}>
+            <Pressable onPress={handlebackPress} style={styles.backBtn}>
               <Icon name="chevron-back" size={24} color="#000" />
             </Pressable>
           ) : null}
@@ -304,7 +304,8 @@ export const Home = ({route}) => {
           key={`card-${currentUserIndex}`}
           entering={SlideInDown.duration(1000)}
           exiting={SlideOutDown.duration(1000)}>
-          {nearbyUsers?.length - 1 !== currentUserIndex
+          {console.log(nearbyUsers?.length - 1, currentUserIndex)}
+          {nearbyUsers?.length !== currentUserIndex
             ? renderCard()
             : renderNoUserNearby()}
         </Animated.View>

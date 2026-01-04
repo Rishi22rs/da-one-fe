@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {screenWidth} from '../../utils/dimensions';
 import {defaultTheme} from '../../config/theme';
+import {hexToRgbA} from '../../utils/hexToRgba';
 
 export const createStyleSheet = () => {
   return StyleSheet.create({
@@ -11,7 +12,6 @@ export const createStyleSheet = () => {
     },
     loginContainer: {
       position: 'absolute',
-      backgroundColor: '#fdf6f7',
       left: 16,
       right: 16,
       bottom: 16,
@@ -38,15 +38,15 @@ export const createStyleSheet = () => {
     loginTitle: {
       color: '#303237',
       fontWeight: '600',
-      fontSize: 18,
+      fontSize: 24,
       lineHeight: 20,
       marginBottom: 8,
     },
     loginSubTitle: {
-      color: '#303237',
+      color: hexToRgbA('#303237', 70),
       fontWeight: '400',
       fontSize: 14,
-      lineHeight: 12,
+      lineHeight: 18,
       marginBottom: 16,
     },
     otpContainer: {
@@ -72,12 +72,17 @@ export const createStyleSheet = () => {
     carouselSubTitle: {
       fontSize: 16,
       textAlign: 'center',
-      color: defaultTheme.black,
+      color: hexToRgbA(defaultTheme.black, 60),
       fontWeight: '400',
     },
     textContainer: {
       paddingHorizontal: 64,
       marginTop: 32,
+    },
+    loginOtpContainer: {
+      paddingHorizontal: 16,
+      paddingTop: 32,
+      backgroundColor: 'white',
     },
   });
 };

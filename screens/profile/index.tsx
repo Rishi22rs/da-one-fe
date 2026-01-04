@@ -7,10 +7,10 @@
 // import {createStyleSheet} from './style';
 // import {useLogout} from '../../utils/useLogout';
 
-// export const Profile = ({route}) => {
+// export const Profile = async ({route}) => {
 //   const styles = createStyleSheet();
 //   const navigation = useNavigation();
-//   const logout = useLogout();
+//   // const logout = await useLogout();
 
 //   const handleEditProfile = () => {
 //     navigation.navigate(navigationConstants.PROFILE_ROUTE, {
@@ -62,7 +62,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {createStyleSheet} from './style';
 import {useNavigation} from '@react-navigation/native';
-import {useLogout} from '../../utils/useLogout';
+import {logout} from '../../utils/useLogout';
 import {navigationConstants} from '../../constants/app-navigation';
 import {Header} from '../../components/Header';
 import {ButtonComponent} from '../../components/ButtonComponent';
@@ -71,7 +71,6 @@ import Animated, {SlideInDown} from 'react-native-reanimated';
 export const Profile = () => {
   const styles = createStyleSheet();
   const navigation = useNavigation();
-  const logout = useLogout();
 
   const handleEditProfile = () => {
     navigation.navigate(navigationConstants.PROFILE_ROUTE, {
@@ -137,7 +136,7 @@ export const Profile = () => {
       <ButtonComponent
         buttonText={'Logout'}
         showIcon
-        onPress={logout}
+        onPress={() => logout(navigation)}
         viewStyle={{marginHorizontal: 16, marginBottom: 16}}
       />
     </SafeAreaView>

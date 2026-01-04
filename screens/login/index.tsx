@@ -4,7 +4,6 @@ import {useRef, useState} from 'react';
 import {Image, ImageBackground, Pressable, Text, View} from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
 import {useLogin, useOtp} from '../../api/auth';
-import LoginBG from '../../assets/loginBg.jpeg';
 import {ButtonComponent} from '../../components/ButtonComponent';
 import {TextComponent} from '../../components/TextComponent';
 import {TextInputComponent} from '../../components/TextInputComponent';
@@ -101,7 +100,9 @@ export const Login = ({route}) => {
               <ButtonComponent
                 buttonText={'Login'}
                 textStyle={style.buttonText}
-                onPress={() => handleSteps(1)}
+                onPress={() =>
+                  navigation.navigate(navigationConstants.LOGIN_PAGE)
+                }
               />
             </View>
           )}

@@ -19,4 +19,6 @@ export const navigationConstants = {
   ITS_A_MATCH: 'its-a-match',
   CHAT: 'chat',
   VIEW_ONLY_PROFILE: 'view-only-profile',
+  LOGIN_PAGE: 'login-page',
+  OTP_PAGE: 'otp-page',
 };
